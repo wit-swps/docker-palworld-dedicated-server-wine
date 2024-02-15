@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 cm2network/steamcmd:root
+FROM --platform=linux/amd64 ubuntu:latest
 
 LABEL maintainer="Sebastian Schmidt - https://github.com/jammsen/docker-palworld-dedicated-server"
 LABEL org.opencontainers.image.authors="Sebastian Schmidt"
@@ -11,16 +11,18 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GAME_ROOT="/palworld" \
     GAME_PATH="/palworld/Pal" \
     GAME_SAVE_PATH="/palworld/Pal/Saved" \
-    GAME_CONFIG_PATH="/palworld/Pal/Saved/Config/LinuxServer" \
-    GAME_SETTINGS_FILE="/palworld/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini" \
-    GAME_ENGINE_FILE="/palworld/Pal/Saved/Config/LinuxServer/Engine.ini" \
+    GAME_CONFIG_PATH="/palworld/Pal/Saved/Config/WindowsServer" \
+    GAME_SETTINGS_FILE="/palworld/Pal/Saved/Config/WindowsServer/PalWorldSettings.ini" \
+    GAME_ENGINE_FILE="/palworld/Pal/Saved/Config/WindowsServer/Engine.ini" \
     STEAMCMD_PATH="/home/steam/steamcmd" \
     RCON_CONFIG_FILE="/home/steam/steamcmd/rcon.yaml" \
     BACKUP_PATH="/palworld/backups" \
+	WINE_BIN="/usr/bin/wine" \
     # Container-setttings
     PUID=1000 \
     PGID=1000 \
     TZ="Europe/Berlin" \
+	WINETRICK_ON_START=true \
     # SteamCMD-settings
     ALWAYS_UPDATE_ON_START=true \
     STEAMCMD_VALIDATE_FILES=true \
@@ -113,7 +115,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     ENABLE_DEFENSE_OTHER_GUILD_PLAYER=false \
     COOP_PLAYER_MAX_NUM=4 \
     MAX_PLAYERS=32 \
-    SERVER_NAME="jammsen-docker-generated-###RANDOM###" \
+    SERVER_NAME="wine-docker-generated-###RANDOM###" \
     SERVER_DESCRIPTION="Palworld-Dedicated-Server running in Docker by jammsen" \
     ADMIN_PASSWORD=adminPasswordHere \
     SERVER_PASSWORD=serverPasswordHere \
@@ -127,13 +129,42 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 EXPOSE 8211/udp
 EXPOSE 25575/tcp
+EXPOSE 27015/tcp
 
-# Install minimum required packages for dedicated server
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends --no-install-suggests gosu procps xdg-user-dirs \
+# Install minimum required packages for dedicated server and wine
+RUN DEBIAN_FRONTEND="noninteractive" apt-get update && \
+    apt-get install -y --no-install-recommends --no-install-suggests \
+	apt-transport-https \
+	gosu \
+	procps \
+	xdg-user-dirs \
+	ca-certificates \
+    cabextract \
+    git \
+    gnupg \
+	p7zip \
+	tzdata \
+	unzip \
+	wget \
+    winbind \
+    xvfb \
+    zenity
     && apt-get autoremove -y --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install wine
+ARG WINE_BRANCH="stable"
+RUN wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
+    && echo "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" >> /etc/apt/sources.list \
+    && dpkg --add-architecture i386 \
+    && apt-get update \
+    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH} \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install winetricks
+RUN wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+    && chmod +x /usr/bin/winetricks
 
 # Latest releases available at https://github.com/aptible/supercronic/releases
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.29/supercronic-linux-amd64 \
@@ -158,6 +189,12 @@ RUN curl -fsSLO "$RCON_URL" \
     && chmod +x "rcon-0.10.3-amd64_linux/$RCON_BINARY" \
     && mv "rcon-0.10.3-amd64_linux/$RCON_BINARY" "/usr/local/bin/${RCON_BINARY}" \
     && rm -Rf rcon-0.10.3-amd64_linux rcon-0.10.3-amd64_linux.tar.gz
+
+# Install Windows version of SteamCmd
+ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"
+RUN curl -fsSL "$STEAMCMD_URL" -o steamcmd.zip && \
+	unzip steamcmd.zip -d ${STEAMCMD_PATH} && \
+	rm -rf steamcmd.zip
 
 COPY --chmod=755 entrypoint.sh /
 COPY --chmod=755 scripts/ /scripts

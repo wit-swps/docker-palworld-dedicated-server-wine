@@ -29,4 +29,5 @@ chown -R "$APP_USER":"$APP_GROUP" /includes
 
 ew_nn "> id steam: " ; e "$(id steam)"
 
+rm /tmp/.X*-lock
 exec gosu $APP_USER:$APP_GROUP "$@"

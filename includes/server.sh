@@ -4,6 +4,7 @@ source /includes/colors.sh
 source /includes/rcon.sh
 source /includes/webhook.sh
 
+
 function start_server() {
     cd "$GAME_ROOT" || exit
     setup_configs
@@ -21,7 +22,7 @@ function start_server() {
         send_start_notification
     fi
     es ">>> Starting the gameserver"
-    ./PalServer.sh "${START_OPTIONS[@]}"
+    "${WINE_BIN}" PalServer.exe "${START_OPTIONS[@]}"
 }
 
 function stop_server() {
@@ -29,9 +30,12 @@ function stop_server() {
     if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
         save_and_shutdown_server
     fi
-	kill -SIGTERM "$(pidof PalServer-Linux-Test)"
-	tail --pid="$(pidof PalServer-Linux-Test)" -f 2>/dev/null
-    if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
+	#kill -SIGTERM "$(pidof PalServer-Linux-Test)"
+	#tail --pid="$(pidof PalServer-Linux-Test)" -f 2>/dev/null
+    wineserver -k
+    killall start.exe
+	kill $XVFB_PROC
+	if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_stop_notification
     fi
     ew ">>> Server stopped gracefully"
@@ -43,7 +47,7 @@ function fresh_install_server() {
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_install_notification
     fi
-    "${STEAMCMD_PATH}"/steamcmd.sh +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 validate +quit
+    "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 validate +quit
     es "> Done installing the gameserver"
 }
 
@@ -53,14 +57,28 @@ function update_server() {
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_update_notification
         fi
-        "${STEAMCMD_PATH}"/steamcmd.sh +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 validate +quit
+        "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 validate +quit
         es ">>> Done updating and validating the gameserver files"
     else
         ei ">>> Doing an update of the gameserver files..."
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_update_notification
         fi
-        "${STEAMCMD_PATH}"/steamcmd.sh +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 +quit
+        "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 +quit
         es ">>> Done updating the gameserver files"
     fi
+}
+
+function start_xvfb() {
+	ei ">>> Starting Xvfb Virtual Display"
+	Xvfb $DISPLAY -screen 0 640x480x8 -nolisten tcp &
+	XVFB_PROC=$!
+}
+
+function winetricks_install() {
+	ei ">>> Installing Visual C++ Runtime 2022"
+	trickscmd=("/usr/bin/winetricks")
+	trickscmd+=("--optout" "-f" "-q" "vcrun2022")
+	echo "${trickscmd[*]}"
+	"${trickscmd[@]}"
 }

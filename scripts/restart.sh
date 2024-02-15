@@ -33,9 +33,11 @@ function schedule_restart() {
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_stop_notification
         fi
-        kill -SIGTERM "$(pidof PalServer-Linux-Test)"
-        tail --pid="$(pidof PalServer-Linux-Test)" -f 2>/dev/null
-        ew ">>> Server stopped gracefully"
+        #kill -SIGTERM "$(pidof PalServer-Win64-Test.exe)"
+        #tail --pid="$(pidof PalServer-Win64-Test.exe)" -f 2>/dev/null
+		wineserver -k
+		killall start.exe
+		ew ">>> Server stopped gracefully"
         exit 143;
     fi
 }

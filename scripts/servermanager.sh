@@ -21,7 +21,11 @@ function term_handler() {
 # Main process thread
 function start_main() {
     check_for_default_credentials
-    if [ ! -f "${GAME_ROOT}/PalServer.sh" ]; then
+	start_xvfb
+	if [ "${WINETRICK_ON_START}" == "true" ]; then
+		winetricks_install
+	fi
+    if [ ! -f "${GAME_ROOT}/PalServer.exe" ]; then
         fresh_install_server
     fi
     if [ "${ALWAYS_UPDATE_ON_START}" == "true" ]; then
