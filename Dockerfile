@@ -23,6 +23,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PGID=1000 \
     TZ="Europe/Berlin" \
 	WINETRICK_ON_START=true \
+	DISPLAY=:99 \
     # SteamCMD-settings
     ALWAYS_UPDATE_ON_START=true \
     STEAMCMD_VALIDATE_FILES=true \
