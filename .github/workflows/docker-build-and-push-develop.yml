@@ -31,7 +31,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            jammsen/palworld-dedicated-server
+            ripps818/palworld-dedicated-server
             ghcr.io/${{ github.repository }}
       - 
         name: Get short SHA
