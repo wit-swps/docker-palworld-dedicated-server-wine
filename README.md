@@ -15,7 +15,7 @@ ___
 >
 > **[Join us on Discord](https://discord.gg/7tacb9Q6tj)**
 
-This Docker image includes a Palworld Dedicated Server based on Linux and Docker.
+This Docker image includes a Palworld Dedicated Server based on Wine and Docker.
 
 ___
 
@@ -109,16 +109,16 @@ See [example docker-compose.yml](docker-compose.yml).
 > [!NOTE]
 > Please research the RCON-Commands on the official source: https://tech.palworldgame.com/settings-and-operation/commands
 
-You can use `docker exec palworld-dedicated-server rconcli <command>` right on your terminal/shell.
+You can use `docker exec palworld-wine-server rconcli <command>` right on your terminal/shell.
 
 ```shell
-$ docker exec palworld-dedicated-server rconcli showplayers
+$ docker exec palworld-wine-server rconcli showplayers
 name,playeruid,steamid
 
-$ docker exec palworld-dedicated-server rconcli info
+$ docker exec palworld-wine-server rconcli info
 Welcome to Pal Server[v0.1.4.1] jammsen-docker-generated-20384
 
-$ docker exec palworld-dedicated-server rconcli save
+$ docker exec palworld-wine-server rconcli save
 Complete Save
 ```
 
@@ -135,7 +135,7 @@ Complete Save
 > Please use in the following part always the `-user steam` option or your files will written as root
 
 
-Usage: `docker exec -user steam palworld-dedicated-server backup [command] [arguments]`
+Usage: `docker exec -user steam palworld-wine-server backup [command] [arguments]`
 
 | Command | Argument           | Required/Optional | Default Value                     | Values           | Description                                                                                                                                                                          |
 | ------- | ------------------ | ----------------- | --------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -146,24 +146,24 @@ Usage: `docker exec -user steam palworld-dedicated-server backup [command] [argu
 Examples:
 
 ```shell
-$ docker exec -user steam palworld-dedicated-server backup
+$ docker exec -user steam palworld-wine-server backup
 > Backup 'saved-20240203_032855.tar.gz' created successfully.
 ```
 
 ```shell
-$ docker exec -user steam palworld-dedicated-server backup list
+$ docker exec -user steam palworld-wine-server backup list
 > Listing 2 backup file(s)!
 2024-02-03 03:28:55 | saved-20240203_032855.tar.gz
 2024-02-03 03:28:00 | saved-20240203_032800.tar.gz
 ```
 
 ```shell
-$ docker exec -user steam palworld-dedicated-server backup_clean 3
+$ docker exec -user steam palworld-wine-server backup_clean 3
 > 1 backup(s) cleaned, keeping 2 backups(s).
 ```
 
 ```shell
-$ docker exec -user steam palworld-dedicated-server backup_list   
+$ docker exec -user steam palworld-wine-server backup_list   
 > Listing 1 out of backup 2 file(s).
 2024-02-03 03:30:00 | saved-20240203_033000.tar.gz
 ```
@@ -197,11 +197,11 @@ A Helm chart to deploy this container can be found at [palworld-helm](https://gi
 
 ### How can I use the interactive console in Portainer with this image?
 
-> You can run this `docker exec -ti palworld-dedicated-server bash' or you could navigate to the **"Stacks"** tab in Portainer, select your stack, and click on the container name. Then click on the **"Exec console"** button.
+> You can run this `docker exec -ti palworld-wine-server bash' or you could navigate to the **"Stacks"** tab in Portainer, select your stack, and click on the container name. Then click on the **"Exec console"** button.
 
 ### How can I look into the config of my Palworld container?
 
-> You can run this `docker exec -ti palworld-dedicated-server cat /palworld/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini` and it will show you the config inside the container.
+> You can run this `docker exec -ti palworld-wine-server cat /palworld/Pal/Saved/Config/WindowsServer/PalWorldSettings.ini` and it will show you the config inside the container.
 
 ### I'm seeing S_API errors in my logs when I start the container?
 
