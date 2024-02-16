@@ -4,6 +4,7 @@ source /includes/colors.sh
 source /includes/rcon.sh
 source /includes/webhook.sh
 
+wine_game_root=`winepath -w ${GAME_ROOT}`
 
 function start_server() {
     cd "$GAME_ROOT" || exit
@@ -46,8 +47,8 @@ function fresh_install_server() {
     ei ">>> Doing a fresh install of the gameserver..."
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_install_notification
-    fi
-    "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 validate +quit
+    fI
+    "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "${wine_game_root}" +login anonymous +app_update 2394010 validate +quit
     es "> Done installing the gameserver"
 }
 
@@ -57,14 +58,14 @@ function update_server() {
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_update_notification
         fi
-        "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 validate +quit
+        "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "${wine_game_root}" +login anonymous +app_update 2394010 validate +quit
         es ">>> Done updating and validating the gameserver files"
     else
         ei ">>> Doing an update of the gameserver files..."
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_update_notification
         fi
-        "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "$GAME_ROOT" +login anonymous +app_update 2394010 +quit
+        "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "${wine_game_root}" +login anonymous +app_update 2394010 +quit
         es ">>> Done updating the gameserver files"
     fi
 }
