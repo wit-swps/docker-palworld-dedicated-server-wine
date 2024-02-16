@@ -47,7 +47,7 @@ function fresh_install_server() {
     ei ">>> Doing a fresh install of the gameserver..."
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_install_notification
-    fI
+    fi
     "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "${wine_game_root}" +login anonymous +app_update 2394010 validate +quit
     es "> Done installing the gameserver"
 }

@@ -9,7 +9,8 @@ set -e
 # Setup Wine it doesn't exist
 if [ ! -d "${WINEPREFIX}" ]; then
 	echo -ne "\e[94m>>> Initializing Wine configuration\e[0m"
-	wineboot --init
+	echo ""
+	WINEDLLOVERRIDES="mscoree,mshtml=" wineboot --init && wineserver -w
 fi
 
 source /includes/colors.sh

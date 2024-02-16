@@ -31,13 +31,9 @@ ew_nn "> id steam: " ; e "$(id steam)"
 
 ei ">>> Starting Xvfb Virtual Display"
 if [ -f /tmp/.X99-lock ]; then
-    if [ -n $XVFB_PROC ]; then
-		kill -9 $XVFB_PROC
-	fi
+	pkill Xvfb
 	rm -rf /tmp/.X99-lock /tmp/.X11-unix
 fi
 Xvfb $DISPLAY -screen 0 640x480x8 -nolisten tcp &
-XVFB_PROC=$!
-export XVFB_PROC
 
 exec gosu $APP_USER:$APP_GROUP "$@"
