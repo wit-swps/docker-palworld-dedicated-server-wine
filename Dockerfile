@@ -194,7 +194,8 @@ RUN curl -fsSLO "$RCON_URL" \
 
 # Install Windows version of SteamCmd
 ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"
-RUN curl -fsSL "$STEAMCMD_URL" -o steamcmd.zip && \
+RUN mkdir -p ${STEAMCMD_PATH}
+RUN curl -fsSLO "$STEAMCMD_URL" && \
 	unzip steamcmd.zip -d ${STEAMCMD_PATH} && \
 	rm -rf steamcmd.zip
 
