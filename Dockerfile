@@ -192,6 +192,10 @@ RUN curl -fsSLO "$RCON_URL" \
     && mv "rcon-0.10.3-amd64_linux/$RCON_BINARY" "/usr/local/bin/${RCON_BINARY}" \
     && rm -Rf rcon-0.10.3-amd64_linux rcon-0.10.3-amd64_linux.tar.gz
 
+# Setup User/Group
+RUN groupadd --gid $PGID steam && \
+    useradd --uid $PUID --gid $PGID -M steam
+
 # Install Windows version of SteamCmd
 ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"
 RUN mkdir -p ${STEAMCMD_PATH}
