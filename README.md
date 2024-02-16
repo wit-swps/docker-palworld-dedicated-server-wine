@@ -4,9 +4,6 @@ This is a modified version of [docker-palworld-dedicated-server](https://github.
 ___
 
 [![Build-Status develop](https://github.com/ripps818/docker-palworld-dedicated-server-wine/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/ripps818/docker-palworld-dedicated-server-wine/actions/workflows/docker-publish.yml)
-![Docker Pulls](https://img.shields.io/docker/pulls/ripps818/docker-palworld-dedicated-server-wine)
-![Docker Stars](https://img.shields.io/docker/stars/ripps818/docker-palworld-dedicated-server-wine)
-![Image Size](https://img.shields.io/docker/image-size/ripps818/docker-palworld-dedicated-server-wine/develop)
 [![Discord](https://img.shields.io/discord/532141442731212810?logo=discord&label=Discord&link=https%3A%2F%2Fdiscord.gg%2F7tacb9Q6tj)](https://discord.gg/7tacb9Q6tj)
 
 > [!TIP]
