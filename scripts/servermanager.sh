@@ -37,6 +37,7 @@ function start_main() {
     if [ "${ALWAYS_UPDATE_ON_START}" == "true" ]; then
         update_server
     fi
+	echo "${GAME_ROOT}/PalServer.exe"
     setup_crons
     start_server
 }
