@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Path-vars
     GAME_ROOT="/palworld" \
     GAME_PATH="/palworld/Pal" \
+	GAME_BIN="${GAME_PATH}/Binaries/Win64/PalServer-Win64-Test-Cmd.exe" \
     GAME_SAVE_PATH="/palworld/Pal/Saved" \
     GAME_CONFIG_PATH="/palworld/Pal/Saved/Config/WindowsServer" \
     GAME_SETTINGS_FILE="/palworld/Pal/Saved/Config/WindowsServer/PalWorldSettings.ini" \

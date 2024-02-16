@@ -31,13 +31,13 @@ function start_main() {
 	if [ "${WINETRICK_ON_START}" == "true" ]; then
 		winetricks_install
 	fi
-    if [ ! -f "${GAME_ROOT}/PalServer.exe" ]; then
+    if [ ! -f "${GAME_BIN}" ]; then
         fresh_install_server
     fi
     if [ "${ALWAYS_UPDATE_ON_START}" == "true" ]; then
         update_server
     fi
-	echo "${GAME_ROOT}/PalServer.exe"
+	echo "${GAME_BIN}"
     setup_crons
     start_server
 }

@@ -23,7 +23,7 @@ function start_server() {
         send_start_notification
     fi
     es ">>> Starting the gameserver"
-    "${WINE_BIN}" PalServer.exe "${START_OPTIONS[@]}"
+    "${WINE_BIN}" "${GAME_BIN}" "${START_OPTIONS[@]}"
 }
 
 function stop_server() {
@@ -31,11 +31,9 @@ function stop_server() {
     if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
         save_and_shutdown_server
     fi
-	#kill -SIGTERM "$(pidof PalServer-Linux-Test)"
-	#tail --pid="$(pidof PalServer-Linux-Test)" -f 2>/dev/null
     wineserver -k
-    pkill start.exe
-	pkill Xvfb
+    pkill -9 start.exe
+	pkill -9 Xvfb
 	if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_stop_notification
     fi
