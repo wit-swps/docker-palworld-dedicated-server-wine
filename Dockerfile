@@ -146,6 +146,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get update && \
 	p7zip \
 	tzdata \
 	unzip \
+	curl \
 	wget \
     winbind \
     xvfb \
