@@ -36,7 +36,7 @@ function schedule_restart() {
         #kill -SIGTERM "$(pidof PalServer-Win64-Test.exe)"
         #tail --pid="$(pidof PalServer-Win64-Test.exe)" -f 2>/dev/null
 		wineserver -k
-		killall start.exe
+		pkill start.exe
 		ew ">>> Server stopped gracefully"
         exit 143;
     fi

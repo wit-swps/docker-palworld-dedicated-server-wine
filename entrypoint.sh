@@ -29,5 +29,15 @@ chown -R "$APP_USER":"$APP_GROUP" /includes
 
 ew_nn "> id steam: " ; e "$(id steam)"
 
-rm /tmp/.X*-lock
+ei ">>> Starting Xvfb Virtual Display"
+if [ -f /tmp/.X99-lock ]; then
+    if [ -n $XVFB_PROC ]; then
+		kill -9 $XVFB_PROC
+	fi
+	rm -rf /tmp/.X99-lock /tmp/.X11-unix
+fi
+Xvfb $DISPLAY -screen 0 640x480x8 -nolisten tcp &
+XVFB_PROC=$!
+export XVFB_PROC
+
 exec gosu $APP_USER:$APP_GROUP "$@"
