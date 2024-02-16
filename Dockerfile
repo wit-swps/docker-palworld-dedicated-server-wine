@@ -24,6 +24,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     TZ="Europe/Berlin" \
 	WINETRICK_ON_START=true \
 	WINEPREFIX=/home/steam/.wine \
+	WINEARCH=win64 \
 	WINEDEBUG=-all \
 	DISPLAY=:99 \
     # SteamCMD-settings
@@ -144,6 +145,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get update && \
 	ca-certificates \
     cabextract \
     git \
+	locales \
     gnupg \
 	p7zip \
 	tzdata \
@@ -193,6 +195,10 @@ RUN curl -fsSLO "$RCON_URL" \
     && chmod +x "rcon-0.10.3-amd64_linux/$RCON_BINARY" \
     && mv "rcon-0.10.3-amd64_linux/$RCON_BINARY" "/usr/local/bin/${RCON_BINARY}" \
     && rm -Rf rcon-0.10.3-amd64_linux rcon-0.10.3-amd64_linux.tar.gz
+
+# Configure locale for unicode
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
 
 # Setup User/Group
 RUN groupadd --gid $PGID steam && \

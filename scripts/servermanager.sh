@@ -6,6 +6,12 @@
 
 set -e
 
+# Setup Wine it doesn't exist
+if [ ! -d "${WINEPREFIX}" ]; then
+	ei ">>> Initializing Wine configuration"
+	wineboot --init
+fi
+
 source /includes/colors.sh
 source /includes/config.sh
 source /includes/cron.sh
@@ -21,10 +27,6 @@ function term_handler() {
 # Main process thread
 function start_main() {
     check_for_default_credentials
-	if [ ! -d "${WINEPREFIX}" ]; then
-		ei ">>> Initializing Wine configuration"
-		wineboot --init && wineserver -w
-	fi
 	if [ "${WINETRICK_ON_START}" == "true" ]; then
 		winetricks_install
 	fi
