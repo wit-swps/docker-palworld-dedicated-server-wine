@@ -8,7 +8,7 @@ set -e
 
 # Setup Wine it doesn't exist
 if [ ! -d "${WINEPREFIX}" ]; then
-	ei ">>> Initializing Wine configuration"
+	echo -ne "\e[94m>>> Initializing Wine configuration\e[0m"
 	wineboot --init
 fi
 
