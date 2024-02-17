@@ -1,8 +1,11 @@
 FROM --platform=linux/amd64 ubuntu:latest
 
-LABEL maintainer="Sebastian Schmidt - https://github.com/jammsen/docker-palworld-dedicated-server"
-LABEL org.opencontainers.image.authors="Sebastian Schmidt"
-LABEL org.opencontainers.image.source="https://github.com/jammsen/docker-palworld-dedicated-server"
+#LABEL maintainer="Sebastian Schmidt - https://github.com/jammsen/docker-palworld-dedicated-server"
+#LABEL org.opencontainers.image.authors="Sebastian Schmidt"
+#LABEL org.opencontainers.image.source="https://github.com/jammsen/docker-palworld-dedicated-server"
+LABEL maintainer="Ripps - https://github.com/ripps818/docker-palworld-dedicated-server-wine"
+LABEL org.opencontainers.image.authors="Ripps"
+LABEL org.opencontainers.image.source="https://github.com/ripps818/docker-palworld-dedicated-server-wine"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
