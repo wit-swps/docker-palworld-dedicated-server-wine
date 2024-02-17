@@ -5,7 +5,7 @@ on:
       image_name:
         description: 'The name of the Docker image'
         required: true
-        default: 'ghcr.io/ripps818/docker-palworld-dedicated-server-wine:develop'
+        default: 'docker-palworld-dedicated-server-wine:develop'
 
 jobs:
   move_image:
