@@ -2,6 +2,10 @@
 
 [Back to main](README.md#changelog)
 
+## 2024-02-17
+
+* Forked by Ripps and converted to Windows wine version.
+
 ## 2024-02-13
 
 * Added the option to enable webhook curl debugging for weird error edge-cases
