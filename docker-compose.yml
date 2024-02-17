@@ -1,4 +1,7 @@
 version: '3.9'
+networks:
+  palworld:
+
 services:
   palworld-dedicated-server:
     #build: .
@@ -14,7 +17,12 @@ services:
         published: 25575 # RCON port on your host
         protocol: tcp
         mode: host
+      - target: 27015 # Query port inside of the container
+        published: 27015 # Query port on your host
+        protocol: tcp
     env_file:
       - ./default.env
     volumes:
       - ./game:/palworld
+    networks:
+      - palworld
