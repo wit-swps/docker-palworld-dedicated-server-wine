@@ -1,4 +1,4 @@
-# Docker - Palworld Dedicated Server
+# Docker - Palworld Dedicated Server Wine
 
 This is a modified version of [docker-palworld-dedicated-server](https://github.com/jammsen/docker-palworld-dedicated-server) by jammsen to use the Windows version the Palworld server instead of Linux. I've tried my best to make everything else from the previous repository work in this version, but there will probably be some incompatibilities.
 ___
@@ -24,6 +24,7 @@ ___
   - [Minimum system requirements](#minimum-system-requirements)
   - [Changelog](#changelog)
   - [Getting started](#getting-started)
+  - [Installing Mods](#installing-mods)
   - [Environment variables](#environment-variables)
   - [Docker-Compose examples](#docker-compose-examples)
     - [Gameserver with RCON-CLI-Tool](#gameserver-with-rcon-cli-tool)
@@ -89,6 +90,19 @@ You can find the [changelog here](CHANGELOG.md)
 6. Start the container via `docker-compose up -d && docker-compose logs -f`
    - Watch the log, if no errors occur you can close the logs with ctrl+c
 7. Now have fun and happy gaming! 🎮😉
+
+## Installing Mods
+
+This Palword Windows server is capable of running the UE4SS framework to install mods.
+1. Download the latest version of [UE4SS 3.0.0 or newer](https://github.com/UE4SS-RE/RE-UE4SS/releases)
+2. Unzip into ./game/Pal/Binaries/Win64 (assuming that ./game/ is where /palworld from the container is bound in your host)
+3. Edit UE4SS-settings.ini for the following settings:
+   
+   ```
+   bUseUObjectArrayCache = false
+   GuiConsoleEnabled = 0
+   ```
+5. Install mods into the Mods folder and follow the install instructions for each mod. It might require editing mods.txt or installing parts of the mod into the generated LogicMods folder.
 
 ## Environment variables
 
