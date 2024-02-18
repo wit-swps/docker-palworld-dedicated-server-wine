@@ -11,8 +11,16 @@ function schedule_restart() {
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_restart_notification
     fi
+	
+	if [[ $RESTART_COUNTDOWN =~ ^[0-9]+$ ]]; then
+		ei "> Restart countdown set to $RESTART_COUNTDOWN minutes"
+		countdown=$RESTART_COUNTDOWN
+	else
+		ew ">> RESTART_COUNTDOWN value invalid, setting countdown to 15 minutes"
+		countdown=15
+	fi
 
-    for ((counter=15; counter>=1; counter--)); do
+    for ((counter=$countdown; counter>=1; counter--)); do
         if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
             time=$(date '+%H:%M:%S')
             rconcli "broadcast ${time}-AUTOMATIC-RESTART-IN-$counter-MINUTES"
@@ -33,10 +41,8 @@ function schedule_restart() {
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_stop_notification
         fi
-        #kill -SIGTERM "$(pidof PalServer-Win64-Test.exe)"
-        #tail --pid="$(pidof PalServer-Win64-Test.exe)" -f 2>/dev/null
-		wineserver -k
-		pkill -9 start.exe
+        kill -SIGTERM "$(pidof start.exe)"
+        tail --pid="$(pidof start.exe)" -f 2>/dev/null
 		ew ">>> Server stopped gracefully"
         exit 143;
     fi
