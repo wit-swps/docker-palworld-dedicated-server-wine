@@ -17,7 +17,7 @@ function broadcast_automatic_restart() {
     rconcli 'save'
     rconcli 'broadcast Saving-done'
     rconcli 'broadcast Creating-backup'
-    rcon "Shutdown 10"
+    rconcli "Shutdown 10"
 }
 
 
