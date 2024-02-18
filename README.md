@@ -1,4 +1,4 @@
-# Docker - Palworld Dedicated Server
+# Docker - Palworld Dedicated Server Wine
 
 This is a modified version of [docker-palworld-dedicated-server](https://github.com/jammsen/docker-palworld-dedicated-server) by jammsen to use the Windows version the Palworld server instead of Linux. I've tried my best to make everything else from the previous repository work in this version, but there will probably be some incompatibilities.
 ___
