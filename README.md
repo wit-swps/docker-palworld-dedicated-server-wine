@@ -90,6 +90,19 @@ You can find the [changelog here](CHANGELOG.md)
    - Watch the log, if no errors occur you can close the logs with ctrl+c
 7. Now have fun and happy gaming! 🎮😉
 
+## Installing Mods
+
+This Palword Windows server is capable of running the UE4SS framework to install mods.
+1. Download the latest version of [UE4SS 3.0.0 or newer](https://github.com/UE4SS-RE/RE-UE4SS/releases)
+2. Unzip into ./game/Pal/Binaries/Win64 (assuming that ./game/ is where /palworld from the container is bound in your host)
+3. Edit UE4SS-settings.ini for the following settings:
+   
+   ```
+   bUseUObjectArrayCache = false
+   GuiConsoleEnabled = 0
+   ```
+5. Install mods into the Mods folder and follow the install instructions for each mod. It might require editing mods.txt or installing parts of the mod into the generated LogicMods folder.
+
 ## Environment variables
 
 See [this file](/docs/ENV_VARS.md) for the documentation
