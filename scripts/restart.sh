@@ -38,7 +38,9 @@ function schedule_restart() {
 		if [[ $RCON_QUIET_SAVE == false ]]; then
 			rconcli 'broadcast Saving-done'
         fi
+		sleep 15
 		rconcli "Shutdown 10"
+
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_stop_notification
         fi

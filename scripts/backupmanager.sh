@@ -143,6 +143,7 @@ function create_backup() {
     rconcli 'save'
 	if [[ $RCON_QUIET_BACKUP == false ]]; then
 		rconcli 'broadcast Saving-done'
+		sleep 15
 		rconcli 'broadcast Creating-backup'
 	fi
 

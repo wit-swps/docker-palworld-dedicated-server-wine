@@ -45,7 +45,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Restart-settings
     RESTART_ENABLED=false \
 	RESTART_COUNTDOWN=15 \
-    RESTART_CRON_EXPRESSION="0 3,15 * * *" \
+    RESTART_CRON_EXPRESSION="0 18 * * *" \
     # Webhook-settings
     WEBHOOK_ENABLED=false \
     WEBHOOK_DEBUG_ENABLED=false \
