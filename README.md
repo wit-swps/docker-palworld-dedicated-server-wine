@@ -156,24 +156,24 @@ Usage: `docker exec -user steam palworld-wine-server backup [command] [arguments
 Examples:
 
 ```shell
-$ docker exec -user steam palworld-wine-server backup
+$ docker exec --user steam palworld-wine-server backup
 > Backup 'saved-20240203_032855.tar.gz' created successfully.
 ```
 
 ```shell
-$ docker exec -user steam palworld-wine-server backup list
+$ docker exec --user steam palworld-wine-server backup list
 > Listing 2 backup file(s)!
 2024-02-03 03:28:55 | saved-20240203_032855.tar.gz
 2024-02-03 03:28:00 | saved-20240203_032800.tar.gz
 ```
 
 ```shell
-$ docker exec -user steam palworld-wine-server backup_clean 3
+$ docker exec --user steam palworld-wine-server backup_clean 3
 > 1 backup(s) cleaned, keeping 2 backups(s).
 ```
 
 ```shell
-$ docker exec -user steam palworld-wine-server backup_list   
+$ docker exec --user steam palworld-wine-server backup_list   
 > Listing 1 out of backup 2 file(s).
 2024-02-03 03:30:00 | saved-20240203_033000.tar.gz
 ```
