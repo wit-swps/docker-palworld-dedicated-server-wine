@@ -10,32 +10,48 @@ function broadcast_automatic_restart() {
     time=$(date '+%H:%M:%S')
 
     for ((counter=1; counter<=15; counter++)); do
-        rconcli "broadcast ${time}-AUTOMATIC-RESTART-IN-$counter-MINUTES"
-        sleep 1
+		if [[ $RCON_QUIET_RESTART == false ]]; then
+			rconcli "broadcast ${time}-AUTOMATIC-RESTART-IN-$counter-MINUTES"
+		fi
+		sleep 1
     done
-    rconcli 'broadcast Saving-world-before-restart...'
+	if [[ $RCON_QUIET_RESTART == false ]]; then
+		rconcli 'broadcast Saving-world-before-restart...'
+	fi
     rconcli 'save'
     rconcli 'broadcast Saving-done'
-    rconcli 'broadcast Creating-backup'
-    rconcli "Shutdown 10"
+    if [[ $RCON_QUIET_BACKUP == false ]]; then
+		rconcli 'broadcast Creating-backup'
+    fi
+	rconcli "Shutdown 10"
 }
 
 
 function broadcast_backup_start() {
     time=$(date '+%H:%M:%S')
 
-    rconcli "broadcast ${time}-Saving-in-5-seconds"
+    if [[ $RCON_QUIET_SAVE == false ]]; then
+		rconcli "broadcast ${time}-Saving-in-5-seconds"
+    fi
     sleep 5
-    rconcli 'broadcast Saving-world...'
+	if [[ $RCON_QUIET_SAVE == false ]]; then
+		rconcli 'broadcast Saving-world...'
+	fi
     rconcli 'save'
-    rconcli 'broadcast Saving-done'
-    rconcli 'broadcast Creating-backup'
+	if [[ $RCON_QUIET_SAVE == false ]]; then
+		rconcli 'broadcast Saving-done'
+	fi
+	if [[ $RCON_QUIET_BACKUP == false ]]; then
+		rconcli 'broadcast Creating-backup'
+	fi
 }
 
 function broadcast_backup_success() {
-    rconcli 'broadcast Backup-done'
+	if [[ $RCON_QUIET_BACKUP == false ]]; then
+		rconcli 'broadcast Backup-done'
+	fi
 }
 
 function broadcast_backup_failed() {
-    rconcli 'broadcast Backup-failed'
+	rconcli 'broadcast Backup-failed'
 }

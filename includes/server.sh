@@ -31,9 +31,8 @@ function stop_server() {
     if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
         save_and_shutdown_server
     fi
-    wineserver -k
-    pkill -9 start.exe
-	pkill -9 Xvfb
+    kill -SIGTERM "$(pidof start.exe)"
+    tail --pid="$(pidof start.exe)" -f 2>/dev/null
 	if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_stop_notification
     fi

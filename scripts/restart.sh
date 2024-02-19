@@ -22,17 +22,23 @@ function schedule_restart() {
 
     for ((counter=$countdown; counter>=1; counter--)); do
         if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
-            time=$(date '+%H:%M:%S')
-            rconcli "broadcast ${time}-AUTOMATIC-RESTART-IN-$counter-MINUTES"
+			if [[ $RCON_QUIET_RESTART == false ]]; then
+				time=$(date '+%H:%M:%S')
+				rconcli "broadcast ${time}-AUTOMATIC-RESTART-IN-$counter-MINUTES"
+		    fi
         fi
         sleep 60
     done
 
     if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
-        rconcli 'broadcast Saving-world-before-restart...'
-        rconcli 'save'
-        rconcli 'broadcast Saving-done'
-        rconcli "Shutdown 10"
+        if [[ $RCON_QUIET_SAVE == false ]]; then
+			rconcli 'broadcast Saving-world-before-restart...'
+        fi
+		rconcli 'save'
+		if [[ $RCON_QUIET_SAVE == false ]]; then
+			rconcli 'broadcast Saving-done'
+        fi
+		rconcli "Shutdown 10"
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
             send_stop_notification
         fi

@@ -31,6 +31,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 	WINEARCH=win64 \
 	WINEDEBUG=-all \
 	DISPLAY=:99 \
+	RCON_QUIET_BACKUP=false \
+	RCON_QUIET_RESTART=false \
+	RCON_QUIET_SAVE=false \
     # SteamCMD-settings
     ALWAYS_UPDATE_ON_START=true \
     STEAMCMD_VALIDATE_FILES=true \

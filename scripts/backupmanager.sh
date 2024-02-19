@@ -133,12 +133,18 @@ function create_backup() {
 
     mkdir -p "${LOCAL_BACKUP_PATH}"
 
-    rconcli "broadcast ${time}-Saving-in-5-seconds"
+	if [[ $RCON_QUIET_BACKUP == false ]]; then
+		rconcli "broadcast ${time}-Saving-in-5-seconds"
+	fi
     sleep 5
-    rconcli 'broadcast Saving-world...'
+	if [[ $RCON_QUIET_BACKUP == false ]]; then
+		rconcli 'broadcast Saving-world...'
+	fi
     rconcli 'save'
-    rconcli 'broadcast Saving-done'
-    rconcli 'broadcast Creating-backup'
+	if [[ $RCON_QUIET_BACKUP == false ]]; then
+		rconcli 'broadcast Saving-done'
+		rconcli 'broadcast Creating-backup'
+	fi
 
     if ! tar cfz "${LOCAL_BACKUP_PATH}/${backup_file_name}" -C "${LOCAL_GAME_PATH}/" "Saved" ; then
         broadcast_backup_failed
