@@ -8,14 +8,14 @@ name: Create testing image
 on:
   #schedule:
   #  - cron: '18 17 * * *'
-  #push:
-  #  branches: [ "develop" ]
-    # Publish semver tags as releases.
-  #  tags: [ 'v*.*.*' ]
-  #pull_request:
-  #  branches: [ "develop" ]
-  workflow_dispatch:
-    branches: [ "work" ]
+  push:
+    branches: [ "master" ]
+    #Publish semver tags as releases.
+    #tags: [ 'v*.*.*','latest' ]
+  pull_request:
+    branches: [ "master" ]
+  #workflow_dispatch:
+    #branches: [ "work" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -94,7 +94,7 @@ jobs:
         env:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: |
-            type=raw,value=testing
+            type=raw,value=latest
             type=raw,value=${{ github.sha }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         # This step uses the identity token to provision an ephemeral certificate
