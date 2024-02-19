@@ -71,7 +71,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Config-setting - Warning: Every setting below here will be affected!
     SERVER_SETTINGS_MODE=manual \
     # Gameserver-start-settings
-    MULTITHREAD_ENABLED=true \
+    MULTITHREAD_ENABLED=false \
     COMMUNITY_SERVER=true \
     # Engine.ini settings
     NETSERVERMAXTICKRATE=120 \
