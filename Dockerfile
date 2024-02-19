@@ -152,6 +152,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get update && \
 	xdg-user-dirs \
 	ca-certificates \
     cabextract \
+	tzdata \
     git \
 	locales \
     gnupg \
