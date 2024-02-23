@@ -8,7 +8,7 @@ source /includes/server.sh
 source /includes/webhook.sh
 
 function schedule_restart() {
-    PLAYER_DETECTION_PID=$(<PLAYER_DETECTION.PID)
+    PLAYER_DETECTION_PID=$(<${GAME_ROOT}/PLAYER_DETECTION.PID)
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_restart_notification
     fi

@@ -193,6 +193,7 @@ RUN apt-get update \
 	procps \
 	xdg-user-dirs \
 	locales \
+	sed \
 	wget\
 	curl \
 	unzip \
