@@ -8,6 +8,7 @@ source /includes/server.sh
 source /includes/webhook.sh
 
 function schedule_restart() {
+    PLAYER_DETECTION_PID=$(<${GAME_ROOT}/PLAYER_DETECTION.PID)
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_restart_notification
     fi
@@ -39,6 +40,7 @@ function schedule_restart() {
 			rconcli 'broadcast Saving-done'
         fi
 		sleep 15
+		kill -SIGTERM "${PLAYER_DETECTION_PID}"
 		rconcli "Shutdown 10"
 
         if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
@@ -51,6 +53,7 @@ function schedule_restart() {
         fi
         kill -SIGTERM "$(pidof start.exe)"
         tail --pid="$(pidof start.exe)" -f 2>/dev/null
+		kill -SIGTERM "${PLAYER_DETECTION_PID}"
 		ew ">>> Server stopped gracefully"
         exit 143;
     fi

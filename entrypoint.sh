@@ -30,9 +30,16 @@ chown -R "$APP_USER":"$APP_GROUP" /includes
 ew_nn "> id steam: " ; e "$(id steam)"
 
 ei ">>> Starting Xvfb Virtual Display"
+
+# Cleanup environment
+if [ -f ${GAME_ROOT}/PLAYER_DETECTION.PID ]; then
+	rm -rf ${GAME_ROOT}/PLAYER_DETECTION.PID
+fi
+
 if [ -f /tmp/.X99-lock ]; then
 	rm -rf /tmp/.X99-lock /tmp/.X11-unix
 fi
+
 Xvfb $DISPLAY -ac -nolisten tcp -screen 0 640x480x8 &
 
 exec gosu $APP_USER:$APP_GROUP "$@"

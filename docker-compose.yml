@@ -4,7 +4,6 @@ networks:
 
 services:
   palworld-dedicated-server:
-    #build: .
     container_name: palworld-wine-server
     image: ripps818/palworld-dedicated-server-wine:latest
     restart: unless-stopped
