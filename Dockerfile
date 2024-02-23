@@ -206,10 +206,8 @@ RUN apt-get update \
 	tzdata
 
 # Configure locale
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    echo 'LANG="US.UTF-8"'>/etc/default/locale && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=US.UTF-8
+RUN echo "LANG=US.UTF-8" >/etc/default/locale && \
+    dpkg-reconfigure --frontend=noninteractive locales
 
 # Install wine
 ARG WINE_BRANCH="stable"
