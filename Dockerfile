@@ -204,9 +204,11 @@ RUN apt-get update \
 	zenity \
 	tzdata
 
-# Configure locale for unicode
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
+# Configure locale
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    echo 'LANG="US.UTF-8"'>/etc/default/locale && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=US.UTF-8
 
 # Install wine
 ARG WINE_BRANCH="stable"
