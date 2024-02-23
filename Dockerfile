@@ -214,9 +214,8 @@ RUN dpkg --add-architecture i386 && \
     mkdir -pm755 /etc/apt/keyrings && \
     wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key && \
     wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources && \
-    && apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH} \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get update
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH}
 
 # Install Windows version of SteamCmd
 ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"
