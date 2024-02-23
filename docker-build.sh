@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker build "$@" --tag=jammsen/palworld-dedicated-server:latest .
+docker build "$@" --tag=ripps818/palworld-dedicated-server-wine:latest .
