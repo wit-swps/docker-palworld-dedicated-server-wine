@@ -1,4 +1,41 @@
-FROM --platform=linux/amd64 ubuntu:latest
+FROM golang:1.22.0-bookworm as rconclibuilder
+
+WORKDIR /build
+
+ENV CGO_ENABLED=0 \
+    GORCON_RCONCLI_URL=https://github.com/gorcon/rcon-cli/archive/refs/tags/v0.10.3.tar.gz \
+    GORCON_RCONCLI_DIR=rcon-cli-0.10.3 \
+    GORCON_RCONCLI_TGZ=v0.10.3.tar.gz \
+    GORCON_RCONCLI_TGZ_SHA1SUM=33ee8077e66bea6ee097db4d9c923b5ed390d583
+
+RUN curl -fsSLO "$GORCON_RCONCLI_URL" \
+    && echo "${GORCON_RCONCLI_TGZ_SHA1SUM}  ${GORCON_RCONCLI_TGZ}" | sha1sum -c - \
+    && tar -xzf "$GORCON_RCONCLI_TGZ" \
+    && mv "$GORCON_RCONCLI_DIR"/* ./ \
+    && rm "$GORCON_RCONCLI_TGZ" \
+    && rm -Rf "$GORCON_RCONCLI_DIR" \
+    && go build -v ./cmd/gorcon
+
+FROM debian:bookworm-slim as supercronicverify
+
+# Latest releases available at https://github.com/aptible/supercronic/releases
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.29/supercronic-linux-amd64 \
+    SUPERCRONIC=supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=cd48d45c4b10f3f0bfdd3a57d054cd05ac96812b
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --no-install-suggests ca-certificates curl \
+    && apt-get autoremove -y --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ RUN curl -fsSLO "$SUPERCRONIC_URL" \
+    && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+    && chmod +x "$SUPERCRONIC" \
+    && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
+    && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
+
+FROM --platform=linux/amd64 debian:bookworm-slim
 
 #LABEL maintainer="Sebastian Schmidt - https://github.com/jammsen/docker-palworld-dedicated-server"
 #LABEL org.opencontainers.image.authors="Sebastian Schmidt"
@@ -13,19 +50,19 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Path-vars
     GAME_ROOT="/palworld" \
     GAME_PATH="/palworld/Pal" \
-	GAME_BIN="/palworld/Pal/Binaries/Win64/PalServer-Win64-Test-Cmd.exe" \
     GAME_SAVE_PATH="/palworld/Pal/Saved" \
-    GAME_CONFIG_PATH="/palworld/Pal/Saved/Config/WindowsServer" \
-    GAME_SETTINGS_FILE="/palworld/Pal/Saved/Config/WindowsServer/PalWorldSettings.ini" \
-    GAME_ENGINE_FILE="/palworld/Pal/Saved/Config/WindowsServer/Engine.ini" \
+    GAME_CONFIG_PATH="/palworld/Pal/Saved/Config/LinuxServer" \
+    GAME_SETTINGS_FILE="/palworld/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini" \
+    GAME_ENGINE_FILE="/palworld/Pal/Saved/Config/LinuxServer/Engine.ini" \
     STEAMCMD_PATH="/home/steam/steamcmd" \
     RCON_CONFIG_FILE="/home/steam/steamcmd/rcon.yaml" \
     BACKUP_PATH="/palworld/backups" \
-	WINE_BIN="/usr/bin/wine" \
     # Container-setttings
     PUID=1000 \
     PGID=1000 \
     TZ="Europe/Berlin" \
+	GAME_BIN="/palworld/Pal/Binaries/Win64/PalServer-Win64-Test-Cmd.exe" \
+	WINE_BIN="/usr/bin/wine" \
 	WINETRICK_ON_START=true \
 	WINEPREFIX=/home/steam/.wine \
 	WINEARCH=win64 \
@@ -43,9 +80,13 @@ ENV DEBIAN_FRONTEND=noninteractive \
     BACKUP_RETENTION_POLICY=true \
     BACKUP_RETENTION_AMOUNT_TO_KEEP=72 \
     # Restart-settings
-    RESTART_ENABLED=false \
 	RESTART_COUNTDOWN=15 \
+    RESTART_ENABLED=false \
     RESTART_CRON_EXPRESSION="0 18 * * *" \
+    # RCON-Playerdection - NEEDS RCON ENABLED!
+    RCON_PLAYER_DETECTION=true \
+    RCON_PLAYER_DETECTION_STARTUP_DELAY=60 \
+    RCON_PLAYER_DETECTION_CHECK_INTERVAL=15 \
     # Webhook-settings
     WEBHOOK_ENABLED=false \
     WEBHOOK_DEBUG_ENABLED=false \
@@ -71,7 +112,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Config-setting - Warning: Every setting below here will be affected!
     SERVER_SETTINGS_MODE=manual \
     # Gameserver-start-settings
-    MULTITHREAD_ENABLED=false \
+    MULTITHREAD_ENABLED=true \
     COMMUNITY_SERVER=true \
     # Engine.ini settings
     NETSERVERMAXTICKRATE=120 \
@@ -127,13 +168,13 @@ ENV DEBIAN_FRONTEND=noninteractive \
     ENABLE_DEFENSE_OTHER_GUILD_PLAYER=false \
     COOP_PLAYER_MAX_NUM=4 \
     MAX_PLAYERS=32 \
-    SERVER_NAME="wine-docker-generated-###RANDOM###" \
+    SERVER_NAME="jammsen-docker-generated-###RANDOM###" \
     SERVER_DESCRIPTION="Palworld-Dedicated-Server running in Docker by jammsen" \
     ADMIN_PASSWORD=adminPasswordHere \
     SERVER_PASSWORD=serverPasswordHere \
     PUBLIC_PORT=8211 \
     PUBLIC_IP= \
-    RCON_ENABLED=false \
+    RCON_ENABLED=true \
     RCON_PORT=25575 \
     REGION= \
     USEAUTH=true \
@@ -143,92 +184,69 @@ EXPOSE 8211/udp
 EXPOSE 25575/tcp
 EXPOSE 27015/tcp
 
-# Install minimum required packages for dedicated server and wine
-RUN DEBIAN_FRONTEND="noninteractive" apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests \
-	apt-transport-https \
-	gosu \
+# Install minimum required packages for dedicated server
+COPY --from=rconclibuilder /build/gorcon /usr/local/bin/rcon
+COPY --from=supercronicverify /usr/local/bin/supercronic /usr/local/bin/supercronic
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --no-install-suggests \
 	procps \
 	xdg-user-dirs \
-	ca-certificates \
-    cabextract \
-	tzdata \
-    git \
 	locales \
-    gnupg \
-	p7zip \
-	tzdata \
-	unzip \
+	wget\
 	curl \
-	wget \
-    winbind \
-    xvfb \
-    zenity \
-    && apt-get autoremove -y --purge \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Install wine
-ARG WINE_BRANCH="stable"
-RUN wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
-    && echo "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" >> /etc/apt/sources.list \
-    && dpkg --add-architecture i386 \
-    && apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH} \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install winetricks
-RUN wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
-    && chmod +x /usr/bin/winetricks
-
-# Latest releases available at https://github.com/aptible/supercronic/releases
-ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.29/supercronic-linux-amd64 \
-    SUPERCRONIC=supercronic-linux-amd64 \
-    SUPERCRONIC_SHA1SUM=cd48d45c4b10f3f0bfdd3a57d054cd05ac96812b
-
-RUN curl -fsSLO "${SUPERCRONIC_URL}" \
-    && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
-    && chmod +x "$SUPERCRONIC" \
-    && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
-    && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
-
-# Latest releases available at https://github.com/gorcon/rcon-cli/releases
-ENV RCON_URL=https://github.com/gorcon/rcon-cli/releases/download/v0.10.3/rcon-0.10.3-amd64_linux.tar.gz \
-    RCON_TGZ=rcon-0.10.3-amd64_linux.tar.gz \
-    RCON_TGZ_MD5SUM=8601c70dcab2f90cd842c127f700e398 \
-    RCON_BINARY=rcon
-
-RUN curl -fsSLO "$RCON_URL" \
-    && echo "${RCON_TGZ_MD5SUM} ${RCON_TGZ}" | md5sum -c - \
-    && tar xfz rcon-0.10.3-amd64_linux.tar.gz \
-    && chmod +x "rcon-0.10.3-amd64_linux/$RCON_BINARY" \
-    && mv "rcon-0.10.3-amd64_linux/$RCON_BINARY" "/usr/local/bin/${RCON_BINARY}" \
-    && rm -Rf rcon-0.10.3-amd64_linux rcon-0.10.3-amd64_linux.tar.gz
+	unzip \
+	winbind \
+	ca-certificates \
+	cabextract \
+	gnupg \
+	xvfb \
+	zenity \
+	tzdata
 
 # Configure locale for unicode
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
-# Setup User/Group
-RUN groupadd --gid $PGID steam && \
-    useradd --uid $PUID --gid $PGID -M steam
+# Install wine
+ARG WINE_BRANCH="stable"
+RUN dpkg --add-architecture i386 && \
+    mkdir -pm755 /etc/apt/keyrings && \
+    wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key && \
+    wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources && \
+    && apt-get update \
+    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH} \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Windows version of SteamCmd
 ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"
 RUN mkdir -p ${STEAMCMD_PATH}
 RUN curl -fsSLO "$STEAMCMD_URL" && \
-	unzip steamcmd.zip -d ${STEAMCMD_PATH} && \
-	rm -rf steamcmd.zip
+    unzip steamcmd.zip -d ${STEAMCMD_PATH} && \
+    rm -rf steamcmd.zip 
+
+# Clean apt
+RUN apt purge -y wget curl \
+    && apt-get autoremove -y --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Setup User/Group
+RUN groupadd --gid $PGID steam && \
+    useradd --uid $PUID --gid $PGID -M steam
 
 COPY --chmod=755 entrypoint.sh /
 COPY --chmod=755 scripts/ /scripts
 COPY --chmod=755 includes/ /includes
 COPY --chmod=755 configs/rcon.yaml /home/steam/steamcmd/rcon.yaml
+COPY --chmod=755 gosu-amd64 /usr/local/bin/gosu
 
 RUN mkdir -p "$BACKUP_PATH" \
     && ln -s /scripts/backupmanager.sh /usr/local/bin/backup \
     && ln -s /scripts/rconcli.sh /usr/local/bin/rconcli \
-    && ln -s /scripts/restart.sh /usr/local/bin/restart
+    && ln -s /scripts/restart.sh /usr/local/bin/restart \
+    && gosu --version \
+    && gosu nobody true
 
 VOLUME ["${GAME_ROOT}"]
 

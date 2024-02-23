@@ -53,5 +53,15 @@ function broadcast_backup_success() {
 }
 
 function broadcast_backup_failed() {
-	rconcli 'broadcast Backup-failed'
+    rconcli 'broadcast Backup-failed'
+}
+
+function broadcast_player_join() {
+    time=$(date '+%H:%M:%S')
+    rconcli "broadcast ${time}-Player-$1-has-joined-the-server"
+}
+
+function broadcast_player_leave() {
+    time=$(date '+%H:%M:%S')
+    rconcli "broadcast ${time}-Player-$1-has-left-the-server"
 }
