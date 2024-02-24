@@ -15,7 +15,7 @@ player_detection_loop() {
  # Function to compare current and previous player lists
 compare_players() {
     local old_players=("${current_players[@]}")
-    readarray -t current_players < <(rcon showplayers | tail -n +2 | awk -F ',' '{print $1}')
+    readarray -t current_players < <(rconcli showplayers | tail -n +2 | awk -F ',' '{print $1}')
 
     for player in "${current_players[@]}"; do
         local found=false
