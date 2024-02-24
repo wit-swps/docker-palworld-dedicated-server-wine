@@ -233,8 +233,7 @@ RUN curl -fsSLO "$STEAMCMD_URL" && \
     rm -rf steamcmd.zip 
 
 # Clean apt
-RUN apt purge -y wget curl \
-    && apt-get autoremove -y --purge \
+RUN apt-get autoremove -y --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
