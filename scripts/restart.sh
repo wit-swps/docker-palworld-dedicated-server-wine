@@ -8,9 +8,10 @@ source /includes/server.sh
 source /includes/webhook.sh
 
 function schedule_restart() {
+    ew ">>> Automatic restart was triggered..."
     PLAYER_DETECTION_PID=$(<${GAME_ROOT}/PLAYER_DETECTION.PID)
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
-        send_restart_notification
+        send_restart_planned_notification
     fi
 	
 	if [[ $RESTART_COUNTDOWN =~ ^[0-9]+$ ]]; then
@@ -23,12 +24,26 @@ function schedule_restart() {
 
     for ((counter=$countdown; counter>=1; counter--)); do
         if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then
+
+            if check_is_server_empty; then
+                ew ">>> Server is empty, restarting now"
+                if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
+                    send_restart_now_notification
+                fi
+                break
+            else 
+                ew ">>> Server has still players"
+            fi
 			if [[ $RCON_QUIET_RESTART == false ]]; then
 				time=$(date '+%H:%M:%S')
 				rconcli "broadcast ${time}-AUTOMATIC-RESTART-IN-$counter-MINUTES"
 		    fi
         fi
-        sleep 60
+        if [[ -n $RESTART_DEBUG_OVERRIDE ]] && [[ $RESTART_DEBUG_OVERRIDE == "true" ]]; then
+            sleep 1
+        else
+            sleep 60
+        fi 
     done
 
     if [[ -n $RCON_ENABLED ]] && [[ $RCON_ENABLED == "true" ]]; then

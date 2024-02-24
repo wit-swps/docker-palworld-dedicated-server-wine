@@ -64,6 +64,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 	GAME_BIN="/palworld/Pal/Binaries/Win64/PalServer-Win64-Test-Cmd.exe" \
 	WINE_BIN="/usr/bin/wine" \
 	WINETRICK_ON_START=true \
+	WINETRICK_BIN="/usr/local/bin/winetricks" \
 	WINEPREFIX=/home/steam/.wine \
 	WINEARCH=win64 \
 	WINEDEBUG=-all \
@@ -82,6 +83,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Restart-settings
 	RESTART_COUNTDOWN=15 \
     RESTART_ENABLED=false \
+    RESTART_DEBUG_OVERRIDE=false \
     RESTART_CRON_EXPRESSION="0 18 * * *" \
     # RCON-Playerdection - NEEDS RCON ENABLED!
     RCON_PLAYER_DETECTION=true \
@@ -97,8 +99,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     WEBHOOK_INSTALL_TITLE="Installing server" \
     WEBHOOK_INSTALL_DESCRIPTION="Server is being installed" \
     WEBHOOK_INSTALL_COLOR="2849520" \
-    WEBHOOK_RESTART_TITLE="Server is restarting soon" \
-    WEBHOOK_RESTART_DESCRIPTION="The gameserver is restarting in 15 minutes" \
+    WEBHOOK_RESTART_TITLE="Automatic restart" \
+    WEBHOOK_RESTART_DELAYED_DESCRIPTION="The automatic gameserver restart has been triggered, if the server has still players, restart will be in 15 minutes" \
+    WEBHOOK_RESTART_NOW_DESCRIPTION="The gameserver is empty, restarting now" \
     WEBHOOK_RESTART_COLOR="15593515" \
     WEBHOOK_START_TITLE="Server is starting" \
     WEBHOOK_START_DESCRIPTION="The gameserver is starting" \
@@ -218,6 +221,10 @@ RUN dpkg --add-architecture i386 && \
     apt-get update
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH}
 
+# Install winetricks
+RUN wget -nv -O ${WINETRICK_BIN} https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+    && chmod +x ${WINETRICK_BIN}
+
 # Install Windows version of SteamCmd
 ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"
 RUN mkdir -p ${STEAMCMD_PATH}
@@ -226,8 +233,7 @@ RUN curl -fsSLO "$STEAMCMD_URL" && \
     rm -rf steamcmd.zip 
 
 # Clean apt
-RUN apt purge -y wget curl \
-    && apt-get autoremove -y --purge \
+RUN apt-get autoremove -y --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

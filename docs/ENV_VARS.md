@@ -23,6 +23,7 @@ These settings control the behavior of the Docker container:
 | BACKUP_RETENTION_POLICY              | Set to enabled, will cleanup old backups                                                                                                            | true                           | Boolean                               |
 | BACKUP_RETENTION_AMOUNT_TO_KEEP      | Defines how many backups in numbers to keep                                                                                                         | 72                             | Integer                               |
 | RESTART_ENABLED                      | Automatic restarts the server                                                                                                                       | false                          | Boolean                               |
+| RESTART_DEBUG_OVERRIDE               | Automatic restarts down to 15 seconds instead of 15 minutes                                                                                         | false                          | Boolean                               |
 | RESTART_CRON_EXPRESSION              | Needs a Cron-Expression - See [Cron expression](#cron-expression)                                                                                   | 0 3,15 * * *                   | Cron-Expression                       |
 | RCON_PLAYER_DETECTION                | Set to enabled will send player join and leaves to console, rcon and webhooks, NEEDS `RCON_ENABLED`                                                 | true                           | Boolean                               |
 | RCON_PLAYER_DETECTION_STARTUP_DELAY  | Initial delay for start checking for players, consider steam-updates and server start up in seconds                                                 | 60                             | Integer                               |
@@ -40,6 +41,7 @@ These settings control the behavior of the Docker container:
 
 SERVER_SETTINGS_MODE accepts 2 values:
 - `auto`: Settings are modified only by environment variables, manual edits will be ignored
+- `rcononly`: RCON-Settings are modified by environment variables (RCON_ENABLED, RCON_PORT, ADMIN_PASSWORD), everything else has to be done by editing the file directly, other environment variables are ignored
 - `manual`: Settings are modified only by editing the file directly, environment variables are ignored
 
 
