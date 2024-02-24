@@ -82,6 +82,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Restart-settings
 	RESTART_COUNTDOWN=15 \
     RESTART_ENABLED=false \
+    RESTART_DEBUG_OVERRIDE=false \
     RESTART_CRON_EXPRESSION="0 18 * * *" \
     # RCON-Playerdection - NEEDS RCON ENABLED!
     RCON_PLAYER_DETECTION=true \
@@ -97,8 +98,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     WEBHOOK_INSTALL_TITLE="Installing server" \
     WEBHOOK_INSTALL_DESCRIPTION="Server is being installed" \
     WEBHOOK_INSTALL_COLOR="2849520" \
-    WEBHOOK_RESTART_TITLE="Server is restarting soon" \
-    WEBHOOK_RESTART_DESCRIPTION="The gameserver is restarting in 15 minutes" \
+    WEBHOOK_RESTART_TITLE="Automatic restart" \
+    WEBHOOK_RESTART_DELAYED_DESCRIPTION="The automatic gameserver restart has been triggered, if the server has still players, restart will be in 15 minutes" \
+    WEBHOOK_RESTART_NOW_DESCRIPTION="The gameserver is empty, restarting now" \
     WEBHOOK_RESTART_COLOR="15593515" \
     WEBHOOK_START_TITLE="Server is starting" \
     WEBHOOK_START_DESCRIPTION="The gameserver is starting" \

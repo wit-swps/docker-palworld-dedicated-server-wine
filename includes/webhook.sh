@@ -34,8 +34,11 @@ send_webhook_notification() {
 send_install_notification() {
   send_webhook_notification "$WEBHOOK_INSTALL_TITLE" "$WEBHOOK_INSTALL_DESCRIPTION" "$WEBHOOK_INSTALL_COLOR"
 }
-send_restart_notification() {
-  send_webhook_notification "$WEBHOOK_RESTART_TITLE" "$WEBHOOK_RESTART_DESCRIPTION" "$WEBHOOK_RESTART_COLOR"
+send_restart_planned_notification() {
+  send_webhook_notification "$WEBHOOK_RESTART_TITLE" "$WEBHOOK_RESTART_DELAYED_DESCRIPTION" "$WEBHOOK_RESTART_COLOR"
+}
+send_restart_now_notification() {
+  send_webhook_notification "$WEBHOOK_RESTART_TITLE" "$WEBHOOK_RESTART_NOW_DESCRIPTION" "$WEBHOOK_RESTART_COLOR"
 }
 send_start_notification() {
   send_webhook_notification "$WEBHOOK_START_TITLE" "$WEBHOOK_START_DESCRIPTION" "$WEBHOOK_START_COLOR"
@@ -46,9 +49,6 @@ send_stop_notification() {
 send_update_notification() {
   send_webhook_notification "$WEBHOOK_UPDATE_TITLE" "$WEBHOOK_UPDATE_DESCRIPTION" "$WEBHOOK_UPDATE_COLOR"
 }
-send_player_join_notification() {
-  send_webhook_notification "$WEBHOOK_INFO_TITLE" "$1" "$WEBHOOK_INFO_COLOR"
-}
-send_player_leave_notification() {
+send_info_notification() {
   send_webhook_notification "$WEBHOOK_INFO_TITLE" "$1" "$WEBHOOK_INFO_COLOR"
 }

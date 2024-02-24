@@ -26,7 +26,6 @@ function broadcast_automatic_restart() {
 	rconcli "Shutdown 10"
 }
 
-
 function broadcast_backup_start() {
     time=$(date '+%H:%M:%S')
 
@@ -58,10 +57,24 @@ function broadcast_backup_failed() {
 
 function broadcast_player_join() {
     time=$(date '+%H:%M:%S')
-    rconcli "broadcast ${time}-Player-$1-has-joined-the-server"
+    rconcli "broadcast ${time}-$1-joined-the-server"
+}
+
+function broadcast_player_name_change() {
+    time=$(date '+%H:%M:%S')
+    rconcli "broadcast ${time}-$1-renamed-to-$2"
 }
 
 function broadcast_player_leave() {
     time=$(date '+%H:%M:%S')
-    rconcli "broadcast ${time}-Player-$1-has-left-the-server"
+    rconcli "broadcast ${time}-$1-left-the-server"
+}
+
+function check_is_server_empty() {
+    num_players=$(rcon -c "$RCON_CONFIG_FILE" showplayers | tail -n +2 | wc -l)
+    if [ "$num_players" -eq 0 ]; then
+        return 0  # Server empty
+    else
+        return 1  # Server not empty
+    fi
 }
