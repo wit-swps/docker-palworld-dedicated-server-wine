@@ -64,6 +64,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 	GAME_BIN="/palworld/Pal/Binaries/Win64/PalServer-Win64-Test-Cmd.exe" \
 	WINE_BIN="/usr/bin/wine" \
 	WINETRICK_ON_START=true \
+	WINETRICK_BIN="/usr/local/bin/winetricks" \
 	WINEPREFIX=/home/steam/.wine \
 	WINEARCH=win64 \
 	WINEDEBUG=-all \
@@ -219,6 +220,10 @@ RUN dpkg --add-architecture i386 && \
     wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources && \
     apt-get update
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH}
+
+# Install winetricks
+RUN wget -nv -O ${WINETRICK_BIN} https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+    && chmod +x ${WINETRICK_BIN}
 
 # Install Windows version of SteamCmd
 ENV STEAMCMD_URL="http://media.steampowered.com/installer/steamcmd.zip"

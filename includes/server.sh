@@ -70,7 +70,7 @@ function update_server() {
 
 function winetricks_install() {
 	ei ">>> Installing Visual C++ Runtime 2022"
-	trickscmd=("/usr/bin/winetricks")
+	trickscmd=("${WINETRICK_BIN}")
 	trickscmd+=("--optout" "-f" "-q" "vcrun2022")
 	echo "${trickscmd[*]}"
 	"${trickscmd[@]}"
