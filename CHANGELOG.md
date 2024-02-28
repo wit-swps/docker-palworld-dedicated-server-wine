@@ -2,6 +2,18 @@
 
 [Back to main](README.md#changelog)
 
+## 2024-02-27
+
+- Added clearer descriptions in the ENV_VARS documentation by @m1xzg
+- Added new mechanic to comply with changes for update 0.1.5.0 by @jammsen and @Callum027 (#236)
+  - Introduced new template file for PalWorldSettings.ini
+  - Added new option for ShowPlayerList
+  - Updated option for Community-Mode servers
+
+## 2024-02-25
+
+- Added new mechanic for customization of webhook content-titles (#223)
+
 ## 2024-02-24
 
 - Added new mechanic for auto-restart, where the player count will be checked, 15 minutes grace-period (for dungeons, boss-fights, etc.) will only used if a player is online, if not the restart will be initiated (#230)
