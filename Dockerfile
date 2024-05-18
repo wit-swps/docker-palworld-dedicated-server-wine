@@ -40,9 +40,12 @@ FROM --platform=linux/amd64 debian:bookworm-slim
 #LABEL maintainer="Sebastian Schmidt - https://github.com/jammsen/docker-palworld-dedicated-server"
 #LABEL org.opencontainers.image.authors="Sebastian Schmidt"
 #LABEL org.opencontainers.image.source="https://github.com/jammsen/docker-palworld-dedicated-server"
-LABEL maintainer="Ripps - https://github.com/ripps818/docker-palworld-dedicated-server-wine"
-LABEL org.opencontainers.image.authors="Ripps"
-LABEL org.opencontainers.image.source="https://github.com/ripps818/docker-palworld-dedicated-server-wine"
+#LABEL maintainer="Ripps - https://github.com/ripps818/docker-palworld-dedicated-server-wine"
+#LABEL org.opencontainers.image.authors="Ripps"
+#LABEL org.opencontainers.image.source="https://github.com/ripps818/docker-palworld-dedicated-server-wine"
+LABEL maintainer="wit.spws - https://github.com/wit-swps/docker-palworld-dedicated-server-wine"
+LABEL org.opencontainers.image.authors="wit.swps"
+LABEL org.opencontainers.image.source="https://github.com/wit-swps/docker-palworld-dedicated-server-wine"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -61,8 +64,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Container-setttings
     PUID=1000 \
     PGID=1000 \
-    TZ="Europe/Berlin" \
-	GAME_BIN="/palworld/Pal/Binaries/Win64/PalServer-Win64-Test-Cmd.exe" \
+    TZ="Asia/Bangkok" \
+	GAME_BIN="/palworld/Pal/Binaries/Win64/PalServer-Win64-Shipping-Cmd.exe" \
 	WINE_BIN="/usr/bin/wine" \
 	WINETRICK_ON_START=true \
 	WINETRICK_BIN="/usr/local/bin/winetricks" \
@@ -173,8 +176,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     ENABLE_DEFENSE_OTHER_GUILD_PLAYER=false \
     COOP_PLAYER_MAX_NUM=4 \
     MAX_PLAYERS=32 \
-    SERVER_NAME="wine-docker-generated-###RANDOM###" \
-    SERVER_DESCRIPTION="Palworld-Wine-Server running in Docker by jammsen and ripps" \
+    SERVER_NAME="onlycloud-###RANDOM###" \
+    SERVER_DESCRIPTION="Palworld Dedicated Server running in Docker with wine by Onlycloud" \
     ADMIN_PASSWORD=adminPasswordHere \
     SERVER_PASSWORD=serverPasswordHere \
     PUBLIC_PORT=8211 \
