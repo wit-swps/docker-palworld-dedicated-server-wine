@@ -4,8 +4,9 @@ networks:
 
 services:
   palworld-dedicated-server:
-    container_name: palworld-wine-server
-    image: witswps/onlycloud-palworld-dedicated-server:latest
+    container_name: onlycloud-palworld
+    #image: witswps/onlycloud-palworld-dedicated-server:latest
+    build: palworld-wine-server\Dockerfile
     restart: unless-stopped
     ports:
       - target: 8211 # Gamerserver port inside of the container
@@ -25,3 +26,19 @@ services:
       - ./game:/palworld
     networks:
       - palworld
+  palworld-rcon-buddy:
+    #image: "valamidev/palworld-rcon-buddy:latest"
+    build: palworld-rcon-buddy\Dockerfile
+    environment:
+      PALWORLD_SERVER_IP_ADDRESS: "onlycloud-palworld" # This is how you can refference the palworld container
+      PALWORLD_RCON_PORT: "25575"
+      PALWORLD_RCON_PASSWORD: "adminPasswordHere" # RCON Password
+      INFO_CACHE_DURATION_MS: 5000 # By Default /info end-point is cached for 5 seconds
+      BEARER_TOKEN: "YOUR_TOKEN"
+      PORT: 3000 # RCON-BUDDY port
+    ports:
+      - "3000:3000"
+    networks:
+      - palworld
+    depends_on:
+      - palworld-dedicated-server
