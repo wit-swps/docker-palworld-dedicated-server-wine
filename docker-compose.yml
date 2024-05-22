@@ -23,7 +23,7 @@ services:
     env_file:
       - palworld-wine-server/default.env
     volumes:
-      - palworld-wine-server/game:/palworld
+      - /palworld-wine-server/game:/palworld
     networks:
       - palworld
   palworld-rcon-buddy:
