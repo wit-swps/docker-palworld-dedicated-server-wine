@@ -21,9 +21,9 @@ services:
         published: 27015 # Query port on your host
         protocol: tcp
     env_file:
-      - ./default.env
+      - palworld-wine-server/default.env
     volumes:
-      - ./game:/palworld
+      - palworld-wine-server/game:/palworld
     networks:
       - palworld
   palworld-rcon-buddy:
