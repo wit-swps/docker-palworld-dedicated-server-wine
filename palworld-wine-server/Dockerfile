@@ -53,6 +53,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     # Path-vars
     GAME_ROOT="/palworld" \
     GAME_PATH="/palworld/Pal" \
+    PALGUARD_PATH="/palworld/Pal/Binaries/Win64"\
     GAME_SAVE_PATH="/palworld/Pal/Saved" \
     GAME_CONFIG_PATH="/palworld/Pal/Saved/Config/WindowsServer" \
     GAME_SETTINGS_FILE="/palworld/Pal/Saved/Config/WindowsServer/PalWorldSettings.ini" \
@@ -253,6 +254,7 @@ COPY --chmod=755 includes/ /includes
 COPY --chmod=755 configs/rcon.yaml /home/steam/steamcmd/rcon.yaml
 COPY --chmod=755 configs/PalWorldSettings.ini.template /
 COPY --chmod=755 gosu-amd64 /usr/local/bin/gosu
+COPY --chmod=755 mods/ /palgaurd
 
 RUN mkdir -p "$BACKUP_PATH" \
     && ln -s /scripts/backupmanager.sh /usr/local/bin/backup \
