@@ -28,6 +28,7 @@ services:
       - palworld
   palworld-rcon-buddy:
     #image: "valamidev/palworld-rcon-buddy:latest"
+    container_name: onlycloud-rcon-buddy
     build: ./palworld-rcon-buddy/
     environment:
       PALWORLD_SERVER_IP_ADDRESS: "onlycloud-palworld" # This is how you can refference the palworld container
