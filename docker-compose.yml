@@ -6,7 +6,7 @@ services:
   palworld-dedicated-server:
     container_name: onlycloud-palworld
     #image: witswps/onlycloud-palworld-dedicated-server:latest
-    build: /palworld-wine-server
+    build: ./palworld-wine-server
     restart: unless-stopped
     ports:
       - target: 8211 # Gamerserver port inside of the container
@@ -21,15 +21,15 @@ services:
         published: 27015 # Query port on your host
         protocol: tcp
     env_file:
-      - /palworld-wine-server/default.env
+      - ./palworld-wine-server/default.env
     volumes:
-      - /palworld-wine-server/game:/palworld
+      - ./palworld-wine-server/game:/palworld
     networks:
       - palworld
   palworld-rcon-buddy:
     #image: "valamidev/palworld-rcon-buddy:latest"
     container_name: onlycloud-rcon-buddy
-    build: /palworld-rcon-buddy/
+    build: ./palworld-rcon-buddy/
     environment:
       PALWORLD_SERVER_IP_ADDRESS: "onlycloud-palworld" # This is how you can refference the palworld container
       PALWORLD_RCON_PORT: "25575"
