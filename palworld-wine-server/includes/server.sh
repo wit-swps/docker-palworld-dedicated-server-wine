@@ -52,7 +52,7 @@ function fresh_install_server() {
     fi
     "${WINE_BIN}" "${STEAMCMD_PATH}"/steamcmd.exe +force_install_dir "${wine_game_root}" +login anonymous +app_update 2394010 validate +quit
     es "> Done installing the gameserver"
-    cp -rv /palguard "${PALGUARD_PATH}"
+    cp -rv /palguard/* "${PALGUARD_PATH}"
 }
 
 function update_server() {
